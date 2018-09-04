@@ -8,9 +8,11 @@
 #include <iostream>
 #include <string>
 
+#include "atom/common/api/file_output_stream.h"
 #include "atom/common/api/locker.h"
 #include "atom/common/atom_version.h"
 #include "atom/common/chrome_version.h"
+#include "atom/common/native_mate_converters/file_path_converter.h"
 #include "atom/common/native_mate_converters/string16_converter.h"
 #include "atom/common/node_includes.h"
 #include "base/logging.h"
@@ -18,6 +20,7 @@
 #include "base/process/process_metrics_iocounters.h"
 #include "base/sys_info.h"
 #include "native_mate/dictionary.h"
+#include "v8/include/v8-profiler.h"
 
 namespace atom {
 
@@ -54,6 +57,7 @@ void AtomBindings::BindTo(v8::Isolate* isolate, v8::Local<v8::Object> process) {
   dict.SetMethod("crash", &AtomBindings::Crash);
   dict.SetMethod("hang", &Hang);
   dict.SetMethod("log", &Log);
+  dict.SetMethod("getHeapSnapshot", &GetHeapSnapshot);
   dict.SetMethod("getHeapStatistics", &GetHeapStatistics);
   dict.SetMethod("getProcessMemoryInfo", &GetProcessMemoryInfo);
   dict.SetMethod("getCreationTime", &GetCreationTime);
@@ -127,6 +131,21 @@ void AtomBindings::Crash() {
 void AtomBindings::Hang() {
   for (;;)
     base::PlatformThread::Sleep(base::TimeDelta::FromSeconds(1));
+}
+
+// static
+bool AtomBindings::GetHeapSnapshot(v8::Isolate* isolate,
+                                   const base::FilePath& file_path) {
+  FileOutputStream stream(file_path);
+  if (!stream.IsValid())
+    return false;
+
+  auto* snap = isolate->GetHeapProfiler()->TakeHeapSnapshot();
+  snap->Serialize(&stream, v8::HeapSnapshot::kJSON);
+
+  const_cast<v8::HeapSnapshot*>(snap)->Delete();
+
+  return stream.IsComplete();
 }
 
 // static

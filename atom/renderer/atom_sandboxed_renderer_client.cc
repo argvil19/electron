@@ -6,6 +6,7 @@
 
 #include "atom/common/api/api_messages.h"
 #include "atom/common/api/atom_bindings.h"
+#include "atom/common/native_mate_converters/file_path_converter.h"
 #include "atom/common/native_mate_converters/string16_converter.h"
 #include "atom/common/native_mate_converters/value_converter.h"
 #include "atom/common/node_bindings.h"
@@ -152,6 +153,7 @@ void AtomSandboxedRendererClient::InitializeBindings(
   b.SetMethod("getExecPath", GetExecPath);
   b.SetMethod("getPid", &base::GetCurrentProcId);
   b.SetMethod("getResourcesPath", &NodeBindings::GetHelperResourcesPath);
+  b.SetMethod("getHeapSnapshot", &AtomBindings::GetHeapSnapshot);
   b.SetMethod("getHeapStatistics", &AtomBindings::GetHeapStatistics);
   b.SetMethod("getProcessMemoryInfo", &AtomBindings::GetProcessMemoryInfo);
   b.SetMethod("getSystemMemoryInfo", &AtomBindings::GetSystemMemoryInfo);

@@ -449,6 +449,8 @@
       'atom/common/api/event_emitter_caller.cc',
       'atom/common/api/event_emitter_caller.h',
       'atom/common/api/features.cc',
+      'atom/common/api/file_output_stream.cc',
+      'atom/common/api/file_output_stream.h',
       'atom/common/api/locker.cc',
       'atom/common/api/locker.h',
       'atom/common/api/object_life_monitor.cc',

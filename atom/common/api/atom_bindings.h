@@ -7,6 +7,7 @@
 
 #include <list>
 
+#include "base/files/file_path.h"
 #include "base/macros.h"
 #include "base/process/process_metrics.h"
 #include "base/strings/string16.h"
@@ -35,6 +36,8 @@ class AtomBindings {
   static void Log(const base::string16& message);
   static void Crash();
   static void Hang();
+  static bool GetHeapSnapshot(v8::Isolate* isolate,
+                              const base::FilePath& file_path);
   static v8::Local<v8::Value> GetHeapStatistics(v8::Isolate* isolate);
   static v8::Local<v8::Value> GetProcessMemoryInfo(v8::Isolate* isolate);
   static v8::Local<v8::Value> GetCreationTime(v8::Isolate* isolate);
